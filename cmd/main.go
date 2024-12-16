@@ -3,23 +3,24 @@ package main
 import (
 	"log"
 	"os"
+	"path/filepath"
 
+	"github.com/actanonvebra/honeyshop/internal/db"
 	"github.com/joho/godotenv"
 )
 
 func main() {
-	err := godotenv.Load()
+	envPath := filepath.Join("..", ".env")
+	err := godotenv.Load(envPath)
 	if err != nil {
 		log.Fatalf("Error loading .env file")
 	}
 
-	dbHost := os.Getenv("DB_HOST")
-	dbPort := os.Getenv("DB_PORT")
-	dbUser := os.Getenv("DB_USER")
-	dbPassword := os.Getenv("DB_PASSWORD")
-	dbName := os.Getenv("DB_NAME")
-	appPort := os.Getenv("APP_PORT")
-
-	log.Printf("Connecting to database %s at %s:%s as user %s", dbName, dbHost, dbPort, dbUser)
+	mongoURI := os.Getenv("MONGO_URI")
+	if mongoURI == "" {
+		log.Fatal("MONGO_URI is not set. Go .env file.")
+	}
+	db.ConnectMongoDB(mongoURI)
+	log.Println("MongoDB connection test completed successfully.")
 
 }
