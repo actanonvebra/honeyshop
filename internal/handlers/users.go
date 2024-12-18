@@ -2,6 +2,7 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/actanonvebra/honeyshop/internal/models"
@@ -20,25 +21,14 @@ func NewUserHandler(service services.UserService) *UserHandler {
 func (h *UserHandler) Login(c echo.Context) error {
 	var credentials models.User
 	if err := c.Bind(&credentials); err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid input."})
+		log.Printf("Bind error: &v", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid input"})
 	}
-
+	log.Printf("Credentials received: %+v", credentials)
 	user, err := h.Service.Login(credentials.Username, credentials.Password)
 	if err != nil {
-		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "invalid username or password"})
+		log.Printf("Login error: %v", err)
+		return c.JSON(http.StatusUnauthorized, map[string]string{"error": err.Error()})
 	}
-
 	return c.JSON(http.StatusOK, user)
-}
-
-func (h *UserHandler) Register(c echo.Context) error {
-	var newUser models.User
-	if err := c.Bind(&newUser); err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid input."})
-	}
-	err := h.Service.Register(newUser)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to cerate user"})
-	}
-	return c.JSON(http.StatusCreated, map[string]string{"message": "User created."})
 }

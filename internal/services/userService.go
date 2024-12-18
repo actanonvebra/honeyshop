@@ -10,7 +10,6 @@ import (
 
 type UserService interface {
 	Login(username, password string) (models.User, error)
-	Register(user models.User) error
 }
 
 type DefaultUserService struct {
@@ -19,12 +18,12 @@ type DefaultUserService struct {
 
 func (s *DefaultUserService) Login(username, password string) (models.User, error) {
 	user, err := s.Repo.GetUserByUserName(username)
-	if err != nil || user.Password != password {
-		return models.User{}, errors.New("invalid username or password")
+	if err != nil {
+		return models.User{}, errors.New("User not found")
+	}
+
+	if user.Password != password {
+		return models.User{}, errors.New("Invalid password")
 	}
 	return user, nil
-}
-
-func (s *DefaultUserService) Register(user models.User) error {
-	return s.Repo.CreateUser(user)
 }

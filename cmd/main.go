@@ -6,7 +6,11 @@ import (
 	"path/filepath"
 
 	"github.com/actanonvebra/honeyshop/internal/db"
+	"github.com/actanonvebra/honeyshop/internal/handlers"
+	"github.com/actanonvebra/honeyshop/internal/repositories"
+	"github.com/actanonvebra/honeyshop/internal/services"
 	"github.com/joho/godotenv"
+	"github.com/labstack/echo/v4"
 )
 
 func main() {
@@ -22,5 +26,13 @@ func main() {
 	}
 	db.ConnectMongoDB(mongoURI)
 	log.Println("MongoDB connection test completed successfully.")
+
+	userRepo := repositories.NewMongoUserRepo("honeyshop", "user")
+	userService := &services.DefaultUserService{Repo: userRepo}
+	userHandler := handlers.NewUserHandler(userService)
+	e := echo.New()
+	e.POST("/login", userHandler.Login)
+	log.Println("Server started at:8080")
+	e.Logger.Fatal(e.Start(":8080"))
 
 }
