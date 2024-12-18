@@ -3,11 +3,13 @@ package repositories
 
 import (
 	"context"
+	"log"
 	"time"
 
 	"github.com/actanonvebra/honeyshop/internal/db"
 	"github.com/actanonvebra/honeyshop/internal/models"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -40,4 +42,24 @@ func (repo *MongoUserRepo) CreateUser(user models.User) error {
 	defer cancel()
 	_, err := repo.Collection.InsertOne(ctx, user)
 	return err
+}
+
+func (repo *MongoUserRepo) CreateUser(user models.User) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	//automatic creation ObjectID
+	if user.ID == "" {
+		user.ID = primitive.NewObjectID().Hex()
+	}
+
+	// add mongodb user collection
+	_, err := repo.Collection.InsertOne(ctx, user)
+	if err != nil {
+		log.Printf("Erorr instering user into MongoDB: %v", err)
+		return err
+	}
+
+	log.Println("User added to MongoDB: ", user.Username)
+	return nil
 }
