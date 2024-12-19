@@ -22,7 +22,7 @@ func NewUserHandler(service services.UserService) *UserHandler {
 func (h *UserHandler) Login(c echo.Context) error {
 	var credentials models.User
 	if err := c.Bind(&credentials); err != nil {
-		log.Printf("Bind error: &v", err)
+		log.Printf("Bind error: %v", err)
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid input"})
 	}
 	log.Printf("Credentials received: %+v", credentials)
@@ -42,7 +42,7 @@ func (h *UserHandler) Register(c echo.Context) error {
 	}
 
 	// call the service layer.
-	err := h.Service.Register(newUser)
+	newUser, err := h.Service.Register(newUser.Username, newUser.Password, newUser.Email)
 	if err != nil {
 		log.Printf("Register Error: %v", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to creat user."})

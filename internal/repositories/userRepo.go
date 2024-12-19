@@ -37,20 +37,20 @@ func (repo *MongoUserRepo) GetUserByUserName(username string) (models.User, erro
 	return user, err
 }
 
-func (repo *MongoUserRepo) CreateUser(user models.User) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	_, err := repo.Collection.InsertOne(ctx, user)
-	return err
-}
+// func (repo *MongoUserRepo) CreateUser(user models.User) error {
+// 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+// 	defer cancel()
+// 	_, err := repo.Collection.InsertOne(ctx, user)
+// 	return err
+// }
 
 func (repo *MongoUserRepo) CreateUser(user models.User) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	//automatic creation ObjectID
-	if user.ID == "" {
-		user.ID = primitive.NewObjectID().Hex()
+	if user.ID.IsZero() {
+		user.ID = primitive.NewObjectID()
 	}
 
 	// add mongodb user collection

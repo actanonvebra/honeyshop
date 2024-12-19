@@ -6,6 +6,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/actanonvebra/honeyshop/internal/helpers"
 	"github.com/actanonvebra/honeyshop/internal/models"
 	"github.com/actanonvebra/honeyshop/internal/repositories"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -33,10 +34,10 @@ func (s *DefaultUserService) Login(username, password string) (models.User, erro
 	return user, nil
 }
 
-func (s *DefaultUserService) Register(user models.User) error {
+func (s *DefaultUserService) Register(username, password, email string) (models.User, error) {
 	// verify users models.
-	if user.Username == "" || user.Password == "" || user.Email == "" {
-		return errors.New("username, password, and email are required")
+	if helpers.IsEmpty(username) || helpers.IsEmpty(password) || helpers.IsEmpty(email) {
+		return models.User{}, errors.New("username, password, and email are required")
 	}
 
 	newUser := models.User{
@@ -45,15 +46,15 @@ func (s *DefaultUserService) Register(user models.User) error {
 		Password:  password,
 		Email:     email,
 		CreatedAt: time.Now().Format(time.RFC3339),
-		UpdateAt:  time.Now().Format(time.RFC3339),
+		UpdatedAt: time.Now().Format(time.RFC3339),
 	}
 
-	err := s.Repo.CreateUser(user)
+	err := s.Repo.CreateUser(newUser)
 	if err != nil {
 		log.Printf("Error creating user: %v", err)
 		return models.User{}, err
 
 	}
 	log.Println("User registered successfully: ", newUser.Username)
-	return nil
+	return newUser, nil
 }
