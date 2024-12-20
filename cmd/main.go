@@ -33,14 +33,17 @@ func main() {
 
 	productRepo := repositories.NewMongoProductRepo("honeyshop", "products")
 	productService := &services.DefaultProductService{Repo: productRepo}
-	productHandler := handlers.NewProductHandler(productService)
+
+	logRepo := repositories.NewMongoLogRepo("honeyshop", "attack_logs")
+	LogService := services.NewLogService(logRepo)
+	productHandler := handlers.NewProductHandler(productService, LogService)
 
 	e := echo.New()
 
 	e.POST("/login", userHandler.Login)
 	e.POST("/register", userHandler.Register)
 	e.GET("/products", productHandler.GetProducts)
-
+	e.GET("/products/search", productHandler.SearchProducts)
 	log.Println("Server started at:8080")
 	e.Logger.Fatal(e.Start(":8080"))
 

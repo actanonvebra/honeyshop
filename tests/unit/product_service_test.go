@@ -41,3 +41,16 @@ func TestFetchAllProducts(t *testing.T) {
 	assert.Equal(t, "Wireless Mouse", products[0].Name, "The first product should be'Wireless Mouse")
 	assert.Equal(t, 29.99, products[0].Price, "The price should be 29.99")
 }
+
+func (m *MockRepository) SearchProducts(keyword string) ([]models.Product, error) {
+	return []models.Product{
+		{
+			ID:          "1",
+			Name:        "Mock Product",
+			Description: "Contains keyword",
+			Price:       10.0,
+			Stock:       5,
+			Category:    "Mock",
+		},
+	}, nil
+}

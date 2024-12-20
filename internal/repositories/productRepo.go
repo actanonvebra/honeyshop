@@ -13,6 +13,7 @@ import (
 
 type ProductRepository interface {
 	GetAllProducts() ([]models.Product, error)
+	SearchProducts(keyword string) ([]models.Product, error)
 }
 type MongoProductRepo struct {
 	Collection *mongo.Collection
@@ -43,5 +44,25 @@ func (repo *MongoProductRepo) GetAllProducts() ([]models.Product, error) {
 		products = append(products, product)
 	}
 	return products, nil
+}
 
+func (repo *MongoProductRepo) SearchProducts(keyword string) ([]models.Product, error) {
+	var products []models.Product
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	filter := bson.M{"name": bson.M{"$regex": keyword, "$options": "i"}}
+	cursor, err := repo.Collection.Find(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+	for cursor.Next(ctx) {
+		var product models.Product
+		if err := cursor.Decode(&product); err != nil {
+			return nil, err
+		}
+		products = append(products, product)
+	}
+	return products, nil
 }
