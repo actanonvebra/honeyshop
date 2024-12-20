@@ -31,10 +31,15 @@ func main() {
 	userService := &services.DefaultUserService{Repo: userRepo}
 	userHandler := handlers.NewUserHandler(userService)
 
+	productRepo := repositories.NewMongoProductRepo("honeyshop", "products")
+	productService := &services.DefaultProductService{Repo: productRepo}
+	productHandler := handlers.NewProductHandler(productService)
+
 	e := echo.New()
 
 	e.POST("/login", userHandler.Login)
 	e.POST("/register", userHandler.Register)
+	e.GET("/products", productHandler.GetProducts)
 
 	log.Println("Server started at:8080")
 	e.Logger.Fatal(e.Start(":8080"))
