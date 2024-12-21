@@ -1,17 +1,27 @@
 package helpers
 
-import "strings"
+import (
+	"log"
+	"net/url"
+	"regexp"
+	"strings"
+)
 
 func IsEmpty(s string) bool {
 	return len(strings.TrimSpace(s)) == 0
 }
 
 func DetectSQLInjection(input string) bool {
-	patterns := []string{"' OR '1'='1", "--", "DROP TABLE", "' OR 1=1"}
-	for _, pattern := range patterns {
-		if strings.Contains(strings.ToLower(input), pattern) {
-			return true
+	decodedInput := input
+	if strings.Contains(input, "%") {
+		decoded, err := url.QueryUnescape(input)
+		if err != nil {
+			decodedInput = decoded
 		}
 	}
-	return false
+	log.Printf("Original Input: %s | Decoded Input: %s", input, decodedInput)
+	sqlInjectionPattern := `(?i)(\bselect\b|\bunion\b|\bupdate\b|\binsert\b|\bdelete\b|\bdrop\b|\bcreate\b|--|;|'|"|\*|=|\bfrom\b|\bwhere\b|\bor\b)`
+
+	re := regexp.MustCompile(sqlInjectionPattern)
+	return re.MatchString(decodedInput)
 }

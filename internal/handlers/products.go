@@ -33,7 +33,7 @@ func (h *ProductHandler) SearchProducts(c echo.Context) error {
 	ip := c.RealIP()
 
 	if helpers.DetectSQLInjection(search) {
-		log.Printf("Potential SQL Inejction", search, ip)
+		log.Printf("Potential SQL Inejction detected: %s from IP: %s", search, ip)
 
 		err := h.LogRepo.LogAttack("SQL Injection", search, ip)
 		if err != nil {
