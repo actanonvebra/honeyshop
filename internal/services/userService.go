@@ -35,7 +35,6 @@ func (s *DefaultUserService) Login(username, password string) (models.User, erro
 }
 
 func (s *DefaultUserService) Register(username, password, email string) (models.User, error) {
-	// verify users models.
 	if helpers.IsEmpty(username) || helpers.IsEmpty(password) || helpers.IsEmpty(email) {
 		return models.User{}, errors.New("username, password, and email are required")
 	}

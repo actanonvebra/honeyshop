@@ -9,6 +9,7 @@ import (
 type ProductService interface {
 	FetchAllProducts() ([]models.Product, error)
 	SearchProducts(keyword string) ([]models.Product, error)
+	AddProduct(product models.Product) error
 }
 
 type DefaultProductService struct {
@@ -21,4 +22,8 @@ func (s *DefaultProductService) FetchAllProducts() ([]models.Product, error) {
 
 func (s *DefaultProductService) SearchProducts(keyword string) ([]models.Product, error) {
 	return s.Repo.SearchProducts(keyword)
+}
+
+func (s *DefaultProductService) AddProduct(product models.Product) error {
+	return s.Repo.AddProduct(product)
 }

@@ -54,3 +54,7 @@ func (m *MockRepository) SearchProducts(keyword string) ([]models.Product, error
 		},
 	}, nil
 }
+
+func (repo *MockRepository) AddProduct(product models.Product) error {
+	return nil
+}

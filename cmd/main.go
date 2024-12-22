@@ -44,6 +44,7 @@ func main() {
 	e.POST("/register", userHandler.Register)
 	e.GET("/products", productHandler.GetProducts)
 	e.GET("/products/search", productHandler.SearchProducts)
+	e.POST("/products", productHandler.AddProduct)
 	log.Println("Server started at:8080")
 	e.Logger.Fatal(e.Start(":8080"))
 
