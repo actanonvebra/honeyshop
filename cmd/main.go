@@ -7,11 +7,14 @@ import (
 
 	"github.com/actanonvebra/honeyshop/internal/db"
 	"github.com/actanonvebra/honeyshop/internal/handlers"
+	"github.com/actanonvebra/honeyshop/internal/middleware"
 	"github.com/actanonvebra/honeyshop/internal/repositories"
 	"github.com/actanonvebra/honeyshop/internal/services"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 )
+
+var failedAttempts = make(map[string]int)
 
 func main() {
 	envPath := filepath.Join("..", ".env")
@@ -40,7 +43,9 @@ func main() {
 
 	e := echo.New()
 
-	e.POST("/login", userHandler.Login)
+	loginRateLimiter := middleware.RateLimiterMiddleWare(LogService)
+
+	e.POST("/login", userHandler.Login, loginRateLimiter)
 	e.POST("/register", userHandler.Register)
 	e.GET("/products", productHandler.GetProducts)
 	e.GET("/products/search", productHandler.SearchProducts)

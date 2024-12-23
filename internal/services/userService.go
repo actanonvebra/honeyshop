@@ -13,7 +13,7 @@ import (
 )
 
 type UserService interface {
-	Login(username, password string) (models.User, error)
+	Login(username, password, ip string) (models.User, error)
 	Register(username, password, email string) (models.User, error)
 }
 
@@ -22,15 +22,17 @@ type DefaultUserService struct {
 }
 
 // düzeltilmesi gerek buranın imza uyumsuzluğu vs var.
-func (s *DefaultUserService) Login(username, password string) (models.User, error) {
+
+func (s *DefaultUserService) Login(username, password, ip string) (models.User, error) {
 	user, err := s.Repo.GetUserByUserName(username)
 	if err != nil {
-		return models.User{}, errors.New("User not found")
+		return models.User{}, errors.New("user not found")
 	}
 
 	if user.Password != password {
-		return models.User{}, errors.New("Invalid password")
+		return models.User{}, errors.New("invalid password")
 	}
+
 	return user, nil
 }
 

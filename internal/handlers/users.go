@@ -11,7 +11,8 @@ import (
 )
 
 type UserHandler struct {
-	Service services.UserService
+	Service    services.UserService
+	LogService services.LogService
 }
 
 func NewUserHandler(service services.UserService) *UserHandler {
@@ -19,18 +20,27 @@ func NewUserHandler(service services.UserService) *UserHandler {
 }
 
 // login handlers
+var failedAttempts = make(map[string]int)
+
 func (h *UserHandler) Login(c echo.Context) error {
 	var credentials models.User
+	ip := c.RealIP()
 	if err := c.Bind(&credentials); err != nil {
 		log.Printf("Bind error: %v", err)
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid input"})
 	}
 	log.Printf("Credentials received: %+v", credentials)
-	user, err := h.Service.Login(credentials.Username, credentials.Password)
+	user, err := h.Service.Login(credentials.Username, credentials.Password, ip)
 	if err != nil {
+		log.Printf("Login error for IP: %s: %v", ip, err)
+		failedAttempts[ip]++
+		if failedAttempts[ip] >= 5 {
+			h.LogService.LogAttack("Brute Force", "Multiple failed login attempts", ip)
+		}
 		log.Printf("Login error: %v", err)
 		return c.JSON(http.StatusUnauthorized, map[string]string{"error": err.Error()})
 	}
+	delete(failedAttempts, ip)
 	return c.JSON(http.StatusOK, user)
 }
 
