@@ -25,7 +25,8 @@ func NewMongoLogRepo(database, collection string) *MongoLogRepo {
 func (repo *MongoLogRepo) LogAttack(attackType, details, ip string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-
+	log.Println("LogAttack called")
+	log.Printf("Attempting to log attack: type:%s, details:%s, ip:%s ", attackType, details, ip)
 	logEntry := models.AttackLog{
 		Type:      attackType,
 		Details:   details,
