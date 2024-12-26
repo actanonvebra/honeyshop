@@ -41,6 +41,11 @@ func main() {
 	LogService := services.NewLogService(logRepo)
 	productHandler := handlers.NewProductHandler(productService, LogService)
 
+	//checkout repository ve service
+	checkoutRepo := repositories.NewMongoCheckoutRepo("honeyshop", "checkout")
+	checkoutService := &services.DefaultCheckoutService{Repo: checkoutRepo}
+	checkoutHandler := handlers.NewCheckoutHandler(checkoutService)
+
 	e := echo.New()
 
 	loginRateLimiter := middleware.RateLimiterMiddleWare(LogService)
@@ -50,6 +55,7 @@ func main() {
 	e.GET("/products", productHandler.GetProducts)
 	e.GET("/products/search", productHandler.SearchProducts)
 	e.POST("/products", productHandler.AddProduct)
+	e.POST("/checkout", checkoutHandler.Checkout)
 	log.Println("Server started at:8080")
 	e.Logger.Fatal(e.Start(":8080"))
 
