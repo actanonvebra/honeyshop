@@ -22,7 +22,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error loading .env file")
 	}
-
+	//mac
 	mongoURI := os.Getenv("MONGO_URI")
 	if mongoURI == "" {
 		log.Fatal("MONGO_URI is not set. Go .env file.")
