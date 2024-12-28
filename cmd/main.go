@@ -1,3 +1,17 @@
+// @title Honeyshop API
+// @version 1.0
+// @description This is the API documentation for the Honeyshop honeypot project.
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name actanonvebra
+// @contact.email ibrahimserhatbulut@gmail.com
+
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
+
+// @host localhost:8080
+// @BasePath /
+
 package main
 
 import (
@@ -12,6 +26,10 @@ import (
 	"github.com/actanonvebra/honeyshop/internal/services"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
+
+	_ "github.com/actanonvebra/honeyshop/docs"
+
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 var failedAttempts = make(map[string]int)
@@ -41,18 +59,20 @@ func main() {
 	LogService := services.NewLogService(logRepo)
 	productHandler := handlers.NewProductHandler(productService, LogService)
 
-	//checkout repository ve service
 	checkoutRepo := repositories.NewMongoCheckoutRepo("honeyshop", "checkout")
 	checkoutService := &services.DefaultCheckoutService{Repo: checkoutRepo}
 	checkoutHandler := handlers.NewCheckoutHandler(checkoutService)
 
 	e := echo.New()
-
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	loginRateLimiter := middleware.RateLimiterMiddleWare(LogService)
 
 	e.POST("/login", userHandler.Login, loginRateLimiter)
+
 	e.POST("/register", userHandler.Register)
+
 	e.GET("/products", productHandler.GetProducts)
+
 	e.GET("/products/search", productHandler.SearchProducts)
 	e.POST("/products", productHandler.AddProduct)
 	e.POST("/checkout", checkoutHandler.Checkout)

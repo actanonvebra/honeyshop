@@ -22,6 +22,16 @@ func NewUserHandler(service services.UserService) *UserHandler {
 // login handlers
 var failedAttempts = make(map[string]int)
 
+// @Summary Login User
+// @Description Authenticate user and return token
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param credentials body models.User true "User's login credentials"
+// @Success 200 {object} models.User
+// @Failure 400 {string} string "Invalid credentials"
+// @Failure 429 {string} string "Too many requests"
+// @Router /login [post]
 func (h *UserHandler) Login(c echo.Context) error {
 	var credentials models.User
 	ip := c.RealIP()
@@ -44,6 +54,17 @@ func (h *UserHandler) Login(c echo.Context) error {
 	return c.JSON(http.StatusOK, user)
 }
 
+// @Summary Register User
+// @Description Register a new user
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param username body string true "User's Username"
+// @Param password body string true "User's Password"
+// @Param email body string true "User's Email"
+// @Success 201 {object} models.User
+// @Failure 400 {string} string "Missing or invalid input"
+// @Router /register [post]
 func (h *UserHandler) Register(c echo.Context) error {
 	var newUser models.User
 	//json bind models->user.go
