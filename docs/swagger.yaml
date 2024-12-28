@@ -1,5 +1,20 @@
 basePath: /
 definitions:
+  github_com_actanonvebra_honeyshop_internal_models.Product:
+    properties:
+      category:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      stock:
+        type: integer
+    type: object
   github_com_actanonvebra_honeyshop_internal_models.User:
     properties:
       createdAt:
@@ -58,6 +73,87 @@ paths:
       summary: Login User
       tags:
       - auth
+  /products:
+    get:
+      consumes:
+      - application/json
+      description: Fetch a list of all available products
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_actanonvebra_honeyshop_internal_models.Product'
+            type: array
+        "500":
+          description: Failed to fetch products
+          schema:
+            type: string
+      summary: Get All Products
+      tags:
+      - products
+    post:
+      consumes:
+      - application/json
+      description: Add a new product to the inventory
+      parameters:
+      - description: Product data
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_actanonvebra_honeyshop_internal_models.Product'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Product added successfully
+          schema:
+            type: string
+        "400":
+          description: Missing required parameter
+          schema:
+            type: string
+        "500":
+          description: Failed to add product
+          schema:
+            type: string
+      summary: Add Product
+      tags:
+      - products
+  /products/search:
+    get:
+      consumes:
+      - application/json
+      description: Searc for products based on a search term
+      parameters:
+      - description: Search term for products
+        in: query
+        name: search
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_actanonvebra_honeyshop_internal_models.Product'
+            type: array
+        "400":
+          description: Invalid input detection
+          schema:
+            type: string
+        "500":
+          description: Failed to search products
+          schema:
+            type: string
+      summary: Search Products
+      tags:
+      - products
   /register:
     post:
       consumes:

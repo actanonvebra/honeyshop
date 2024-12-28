@@ -20,6 +20,14 @@ func NewProductHandler(service services.ProductService, logService services.LogS
 	return &ProductHandler{Service: service, LogRepo: logService}
 }
 
+// @Summary Get All Products
+// @Description Fetch a list of all available products
+// @Tags products
+// @Accept json
+// @Produce json
+// @Success 200 {array} models.Product
+// @Failure 500 {string} string "Failed to fetch products"
+// @Router /products [get]
 func (h *ProductHandler) GetProducts(c echo.Context) error {
 	products, err := h.Service.FetchAllProducts()
 	if err != nil {
@@ -28,7 +36,16 @@ func (h *ProductHandler) GetProducts(c echo.Context) error {
 	return c.JSON(http.StatusOK, products)
 }
 
-// sqli
+// @Summary Search Products
+// @Description Searc for products based on a search term
+// @Tags products
+// @Accept json
+// @Produce json
+// @Param search query string true "Search term for products"
+// @Success 200 {array} models.Product
+// @Failure 400 {string} string "Invalid input detection"
+// @Failure 500 {string} string "Failed to search products"
+// @Router /products/search [get]
 func (h *ProductHandler) SearchProducts(c echo.Context) error {
 	search := c.QueryParam("search")
 	ip := c.RealIP()
@@ -52,6 +69,16 @@ func (h *ProductHandler) SearchProducts(c echo.Context) error {
 	return c.JSON(http.StatusOK, products)
 }
 
+// @Summary Add Product
+// @Description Add a new product to the inventory
+// @Tags products
+// @Accept json
+// @Produce json
+// @Param product body models.Product true "Product data"
+// @Success 201 {string} string "Product added successfully"
+// @Failure 400 {string} string "Missing required parameter"
+// @Success 500 {string} string "Failed to add product"
+// @Router /products [post]
 func (h *ProductHandler) AddProduct(c echo.Context) error {
 	var product models.Product
 	if err := c.Bind(&product); err != nil {
