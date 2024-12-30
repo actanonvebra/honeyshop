@@ -37,10 +37,11 @@ func NewCartHandler(cartService services.CartService, productService services.Pr
 // @Success 200 {object} map[string]interface{} "Checkout completed successfully"
 // @Failure 404 {string} string "Cart not found"
 // @Failure 500 {string} string "Failed to process checkout"
-// @Router /cart/checkout/{userUD} [post]
+// @Router /cart/checkout/{userID} [post]
 func (h *CartHandler) CheckoutCart(c echo.Context) error {
-	userID := c.Param("UserID")
-	log.Println("Get user id...")
+	userID := c.Param("userID")
+	log.Printf("Received userID: %s", userID)
+	log.Printf("Raw userID from request: %q", c.Param("userID"))
 
 	cart, err := h.CartService.GetCartByUserID(userID)
 	if err != nil {

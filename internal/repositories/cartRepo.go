@@ -3,6 +3,7 @@ package repositories
 
 import (
 	"context"
+	"log"
 	"time"
 
 	"github.com/actanonvebra/honeyshop/internal/db"
@@ -32,8 +33,10 @@ func (r *MongoCartRepository) FindCartByUserID(userID string) (*models.Cart, err
 
 	var cart models.Cart
 	filter := bson.M{"UserId": userID}
+	log.Printf("Filter used in MongoDB query: %+v", filter)
 	err := r.Collection.FindOne(ctx, filter).Decode(&cart)
 	if err != nil {
+		log.Printf("MongoDB query error: %v", err)
 		return nil, err
 	}
 	return &cart, nil

@@ -54,6 +54,36 @@ info:
   title: Honeyshop API
   version: "1.0"
 paths:
+  /cart/checkout/{userID}:
+    post:
+      consumes:
+      - application/json
+      description: Processes the user's cart and creates a checkout record
+      parameters:
+      - description: User ID
+        in: path
+        name: userID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Checkout completed successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Cart not found
+          schema:
+            type: string
+        "500":
+          description: Failed to process checkout
+          schema:
+            type: string
+      summary: Checkout Cart
+      tags:
+      - cart
   /checkout:
     post:
       consumes:
