@@ -28,6 +28,16 @@ func NewCartHandler(cartService services.CartService, productService services.Pr
 	}
 }
 
+// @Summary Checkout Cart
+// @Description Processes the user's cart and creates a checkout record
+// @Tags cart
+// @Accept json
+// @Produce json
+// @Param userID path string true "User ID"
+// @Success 200 {object} map[string]interface{} "Checkout completed successfully"
+// @Failure 404 {string} string "Cart not found"
+// @Failure 500 {string} string "Failed to process checkout"
+// @Router /cart/checkout/{userUD} [post]
 func (h *CartHandler) CheckoutCart(c echo.Context) error {
 	userID := c.Param("UserID")
 	log.Println("Get user id...")
