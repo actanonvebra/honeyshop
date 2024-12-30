@@ -58,3 +58,14 @@ func (m *MockRepository) SearchProducts(keyword string) ([]models.Product, error
 func (repo *MockRepository) AddProduct(product models.Product) error {
 	return nil
 }
+
+func (repo *MockRepository) FindProductByID(productID string) (*models.Product, error) {
+	return &models.Product{
+		ID:          productID,
+		Name:        "Mock Product",
+		Description: "This is a mock product for testing purposes",
+		Price:       15.00,
+		Stock:       10,
+		Category:    "Mock Category",
+	}, nil
+}

@@ -19,6 +19,16 @@ func NewCheckoutHandler(service services.CheckoutService) *CheckoutHandler {
 	return &CheckoutHandler{Service: service}
 }
 
+// @Summary Checkout
+// @Description Process a checkout for a user
+// @Tags checkout
+// @Accept json
+// @Produce json
+// @Param checkout body models.Checkout true "Checkout data"
+// @Success 200 {string} string "Checkout completed successfully"
+// @Failure 400 {string} string "Invalid Checkout"
+// @Failure 500 {string} string "Checkout processing failed"
+// @Router /checkout [post]
 func (h *CheckoutHandler) Checkout(c echo.Context) error {
 	var checkout models.Checkout
 	if err := c.Bind(&checkout); err != nil {

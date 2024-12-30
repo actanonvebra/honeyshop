@@ -49,23 +49,25 @@ func main() {
 	log.Println("MongoDB connection test completed successfully.")
 
 	userRepo := repositories.NewMongoUserRepo("honeyshop", "user")
-	userService := &services.DefaultUserService{Repo: userRepo}
-	userHandler := handlers.NewUserHandler(userService)
-
 	productRepo := repositories.NewMongoProductRepo("honeyshop", "products")
-	productService := &services.DefaultProductService{Repo: productRepo}
-
 	logRepo := repositories.NewMongoLogRepo("honeyshop", "attack_logs")
-	LogService := services.NewLogService(logRepo)
-	productHandler := handlers.NewProductHandler(productService, LogService)
-
 	checkoutRepo := repositories.NewMongoCheckoutRepo("honeyshop", "checkout")
-	checkoutService := &services.DefaultCheckoutService{Repo: checkoutRepo}
+	cartRepo := repositories.NewMongoCartRepository("honeyshop", "cart")
+
+	userService := &services.DefaultUserService{Repo: userRepo}
+	productService := services.NewProductService(productRepo)
+	checkoutService := services.NewCheckoutService(checkoutRepo)
+	cartService := services.NewCartService(cartRepo)
+	logService := services.NewLogService(logRepo)
+
+	userHandler := handlers.NewUserHandler(userService)
+	productHandler := handlers.NewProductHandler(productService, logService)
 	checkoutHandler := handlers.NewCheckoutHandler(checkoutService)
+	cartHandler := handlers.NewCartHandler(cartService, productService, checkoutService)
 
 	e := echo.New()
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
-	loginRateLimiter := middleware.RateLimiterMiddleWare(LogService)
+	loginRateLimiter := middleware.RateLimiterMiddleWare(logService)
 
 	e.POST("/login", userHandler.Login, loginRateLimiter)
 
@@ -74,8 +76,13 @@ func main() {
 	e.GET("/products", productHandler.GetProducts)
 
 	e.GET("/products/search", productHandler.SearchProducts)
+
 	e.POST("/products", productHandler.AddProduct)
+
 	e.POST("/checkout", checkoutHandler.Checkout)
+
+	e.POST("/cart/checkout/:userID", cartHandler.CheckoutCart)
+
 	log.Println("Server started at:8080")
 	e.Logger.Fatal(e.Start(":8080"))
 

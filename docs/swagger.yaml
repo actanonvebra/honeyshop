@@ -1,5 +1,16 @@
 basePath: /
 definitions:
+  github_com_actanonvebra_honeyshop_internal_models.Checkout:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      total:
+        type: number
+      userID:
+        type: string
+    type: object
   github_com_actanonvebra_honeyshop_internal_models.Product:
     properties:
       category:
@@ -43,6 +54,36 @@ info:
   title: Honeyshop API
   version: "1.0"
 paths:
+  /checkout:
+    post:
+      consumes:
+      - application/json
+      description: Process a checkout for a user
+      parameters:
+      - description: Checkout data
+        in: body
+        name: checkout
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_actanonvebra_honeyshop_internal_models.Checkout'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Checkout completed successfully
+          schema:
+            type: string
+        "400":
+          description: Invalid Checkout
+          schema:
+            type: string
+        "500":
+          description: Checkout processing failed
+          schema:
+            type: string
+      summary: Checkout
+      tags:
+      - checkout
   /login:
     post:
       consumes:

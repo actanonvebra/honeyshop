@@ -23,6 +23,52 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/checkout": {
+            "post": {
+                "description": "Process a checkout for a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "checkout"
+                ],
+                "summary": "Checkout",
+                "parameters": [
+                    {
+                        "description": "Checkout data",
+                        "name": "checkout",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_actanonvebra_honeyshop_internal_models.Checkout"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Checkout completed successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Checkout",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Checkout processing failed",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/login": {
             "post": {
                 "description": "Authenticate user and return token",
@@ -252,6 +298,23 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "github_com_actanonvebra_honeyshop_internal_models.Checkout": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "total": {
+                    "type": "number"
+                },
+                "userID": {
+                    "type": "string"
+                }
+            }
+        },
         "github_com_actanonvebra_honeyshop_internal_models.Product": {
             "type": "object",
             "properties": {

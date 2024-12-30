@@ -16,6 +16,7 @@ type ProductRepository interface {
 	GetAllProducts() ([]models.Product, error)
 	SearchProducts(keyword string) ([]models.Product, error)
 	AddProduct(product models.Product) error
+	FindProductByID(productID string) (*models.Product, error)
 }
 type MongoProductRepo struct {
 	Collection *mongo.Collection
@@ -79,4 +80,17 @@ func (repo *MongoProductRepo) AddProduct(product models.Product) error {
 		return err
 	}
 	return nil
+}
+
+func (r *MongoProductRepo) FindProductByID(productID string) (*models.Product, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	var product models.Product
+	filter := bson.M{"id": productID}
+	err := r.Collection.FindOne(ctx, filter).Decode(&product)
+	if err != nil {
+		return nil, err
+	}
+	return &product, nil
 }
