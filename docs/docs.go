@@ -88,7 +88,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_actanonvebra_honeyshop_internal_models.Checkout"
+                            "$ref": "#/definitions/models.Checkout"
                         }
                     }
                 ],
@@ -134,7 +134,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_actanonvebra_honeyshop_internal_models.User"
+                            "$ref": "#/definitions/models.User"
                         }
                     }
                 ],
@@ -142,7 +142,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_actanonvebra_honeyshop_internal_models.User"
+                            "$ref": "#/definitions/models.User"
                         }
                     },
                     "400": {
@@ -179,7 +179,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/github_com_actanonvebra_honeyshop_internal_models.Product"
+                                "$ref": "#/definitions/models.Product"
                             }
                         }
                     },
@@ -210,7 +210,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_actanonvebra_honeyshop_internal_models.Product"
+                            "$ref": "#/definitions/models.Product"
                         }
                     }
                 ],
@@ -264,7 +264,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/github_com_actanonvebra_honeyshop_internal_models.Product"
+                                "$ref": "#/definitions/models.Product"
                             }
                         }
                     },
@@ -329,7 +329,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/github_com_actanonvebra_honeyshop_internal_models.User"
+                            "$ref": "#/definitions/models.User"
                         }
                     },
                     "400": {
@@ -343,7 +343,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "github_com_actanonvebra_honeyshop_internal_models.Checkout": {
+        "models.Checkout": {
             "type": "object",
             "properties": {
                 "createdAt": {
@@ -360,7 +360,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_actanonvebra_honeyshop_internal_models.Product": {
+        "models.Product": {
             "type": "object",
             "properties": {
                 "category": {
@@ -383,7 +383,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_actanonvebra_honeyshop_internal_models.User": {
+        "models.User": {
             "type": "object",
             "properties": {
                 "createdAt": {

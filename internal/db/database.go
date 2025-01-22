@@ -12,6 +12,7 @@ import (
 var MongoClient *mongo.Client
 
 func ConnectMongoDB(uri string) {
+	log.Printf("Connecting to MongoDB at URI: %s", uri)
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -22,9 +23,10 @@ func ConnectMongoDB(uri string) {
 
 	err = client.Ping(ctx, nil)
 	if err != nil {
-		log.Fatalf("MongoDB connection failed: %v", err)
+		log.Fatalf("Failed to ping MongoDB: %v", err)
 	}
-	log.Println("Connected to MongoDB")
+
+	log.Println("MongoDB connection successful!")
 	MongoClient = client
 }
 

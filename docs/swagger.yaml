@@ -1,6 +1,6 @@
 basePath: /
 definitions:
-  github_com_actanonvebra_honeyshop_internal_models.Checkout:
+  models.Checkout:
     properties:
       createdAt:
         type: string
@@ -11,7 +11,7 @@ definitions:
       userID:
         type: string
     type: object
-  github_com_actanonvebra_honeyshop_internal_models.Product:
+  models.Product:
     properties:
       category:
         type: string
@@ -26,7 +26,7 @@ definitions:
       stock:
         type: integer
     type: object
-  github_com_actanonvebra_honeyshop_internal_models.User:
+  models.User:
     properties:
       createdAt:
         type: string
@@ -95,7 +95,7 @@ paths:
         name: checkout
         required: true
         schema:
-          $ref: '#/definitions/github_com_actanonvebra_honeyshop_internal_models.Checkout'
+          $ref: '#/definitions/models.Checkout'
       produces:
       - application/json
       responses:
@@ -125,14 +125,14 @@ paths:
         name: credentials
         required: true
         schema:
-          $ref: '#/definitions/github_com_actanonvebra_honeyshop_internal_models.User'
+          $ref: '#/definitions/models.User'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_actanonvebra_honeyshop_internal_models.User'
+            $ref: '#/definitions/models.User'
         "400":
           description: Invalid credentials
           schema:
@@ -156,7 +156,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/github_com_actanonvebra_honeyshop_internal_models.Product'
+              $ref: '#/definitions/models.Product'
             type: array
         "500":
           description: Failed to fetch products
@@ -175,7 +175,7 @@ paths:
         name: product
         required: true
         schema:
-          $ref: '#/definitions/github_com_actanonvebra_honeyshop_internal_models.Product'
+          $ref: '#/definitions/models.Product'
       produces:
       - application/json
       responses:
@@ -212,7 +212,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/github_com_actanonvebra_honeyshop_internal_models.Product'
+              $ref: '#/definitions/models.Product'
             type: array
         "400":
           description: Invalid input detection
@@ -255,7 +255,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/github_com_actanonvebra_honeyshop_internal_models.User'
+            $ref: '#/definitions/models.User'
         "400":
           description: Missing or invalid input
           schema:

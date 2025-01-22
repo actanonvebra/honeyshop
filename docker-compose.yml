@@ -1,0 +1,25 @@
+services:
+  app:
+    build:
+      context: .
+    container_name: honeyshop_app
+    ports:
+      - "8080:8080"
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/honeyshop
+    volumes:
+      - ./.env:/app/.env
+
+  mongo:
+    image: mongo:5.0
+    container_name: honeyshop_mongo
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.runCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5

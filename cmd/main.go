@@ -35,18 +35,17 @@ import (
 var failedAttempts = make(map[string]int)
 
 func main() {
+	// Önce .env dosyasını yüklemeye çalış
 	envPath := filepath.Join("..", ".env")
-	err := godotenv.Load(envPath)
-	if err != nil {
-		log.Fatalf("Error loading .env file")
-	}
-	//mac
+	_ = godotenv.Load(envPath) // Hata olsa bile devam et
+
+	// Çevresel değişkenden oku
 	mongoURI := os.Getenv("MONGO_URI")
 	if mongoURI == "" {
-		log.Fatal("MONGO_URI is not set. Go .env file.")
+		log.Fatal("MONGO_URI is not set. Check environment variables or .env file.")
 	}
+	log.Println("Mongo URI:", mongoURI)
 	db.ConnectMongoDB(mongoURI)
-	log.Println("MongoDB connection test completed successfully.")
 
 	userRepo := repositories.NewMongoUserRepo("honeyshop", "user")
 	productRepo := repositories.NewMongoProductRepo("honeyshop", "products")
@@ -66,7 +65,7 @@ func main() {
 	cartHandler := handlers.NewCartHandler(cartService, productService, checkoutService)
 
 	e := echo.New()
-	e.GET("/swagger/*", echoSwagger.WrapHandler)
+	e.GET("/swagger/*any", echoSwagger.WrapHandler)
 	loginRateLimiter := middleware.RateLimiterMiddleWare(logService)
 
 	e.POST("/login", userHandler.Login, loginRateLimiter)
